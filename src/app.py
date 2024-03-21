@@ -37,8 +37,8 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/user', methods=['GET'])
-def handle_hello():
-
+def get_all_users():
+    User.query.all()
     response_body = {
         "msg": "Hello, this is your GET /user response "
     }
