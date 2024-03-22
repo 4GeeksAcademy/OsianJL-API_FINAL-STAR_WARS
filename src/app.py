@@ -97,6 +97,63 @@ def get_all_starships():
     
     return jsonify(response_body), 200
 
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_one_user(user_id):
+    query_results = User.query.filter_by(id=user_id).first()
+   
+
+    if query_results is None:
+        return jsonify({"msg": "ese usuario no existe"}), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": query_results.serialize()
+    }
+    return jsonify(response_body), 200
+
+@app.route('/planets/<int:planets_id>', methods=['GET'])
+def get_one_planet(planets_id):
+    query_results = Planets.query.filter_by(id=planets_id).first()
+   
+
+    if query_results is None:
+        return jsonify({"msg": "ese planeta no existe"}), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": query_results.serialize()
+    }
+    return jsonify(response_body), 200
+
+@app.route('/characters/<int:characters_id>', methods=['GET'])
+def get_one_character(characters_id):
+    query_results = Characters.query.filter_by(id=characters_id).first()
+   
+
+    if query_results is None:
+        return jsonify({"msg": "ese personaje no existe"}), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": query_results.serialize()
+    }
+    return jsonify(response_body), 200
+
+@app.route('/starships/<int:starships_id>', methods=['GET'])
+def get_one_starship(starships_id):
+    query_results = Starships.query.filter_by(id=starships_id).first()
+   
+
+    if query_results is None:
+        return jsonify({"msg": "esa nave no existe"}), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": query_results.serialize()
+    }
+    return jsonify(response_body), 200
+
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))

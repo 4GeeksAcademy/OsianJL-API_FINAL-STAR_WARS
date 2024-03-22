@@ -14,7 +14,7 @@ class Favorites(db.Model):
 
     
     def __repr__(self):
-        return '<User %r>' % self.user_id
+        return '<Favorites %r>' % self.id
 
     def serialize(self):
         return {
@@ -54,7 +54,7 @@ class Characters(db.Model):
 
     
     def __repr__(self):
-        return '<User %r>' % self.name
+        return '<Characters %r>' % self.name
 
     def serialize(self):
         return {
@@ -82,7 +82,7 @@ class Planets(db.Model):
 
     
     def __repr__(self):
-        return '<User %r>' % self.name
+        return '<Planets %r>' % self.name
 
     def serialize(self):
         return {
@@ -109,7 +109,7 @@ class Starships(db.Model):
 
     
     def __repr__(self):
-        return '<User %r>' % self.model
+        return '<Starships %r>' % self.model
 
     def serialize(self):
         return {
