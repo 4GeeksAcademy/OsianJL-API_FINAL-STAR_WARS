@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Planets, Characters, Starships
 #from models import Person
 
 app = Flask(__name__)
@@ -38,11 +38,63 @@ def sitemap():
 
 @app.route('/user', methods=['GET'])
 def get_all_users():
-    User.query.all()
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+    query_results = User.query.all()
+    results = list(map(lambda item: item.serialize(), query_results))
 
+    if results == []:
+        return jsonify("por el momento no hay usuarios"), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": results
+    }
+    
+    return jsonify(response_body), 200
+
+@app.route('/planets', methods=['GET'])
+def get_all_planets():
+    query_results = Planets.query.all()
+    results = list(map(lambda item: item.serialize(), query_results))
+
+    if results == []:
+        return jsonify("por el momento no hay planetas"), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": results
+    }
+    
+    return jsonify(response_body), 200
+
+
+@app.route('/characters', methods=['GET'])
+def get_all_characters():
+    query_results = Characters.query.all()
+    results = list(map(lambda item: item.serialize(), query_results))
+
+    if results == []:
+        return jsonify("por el momento no hay planetas"), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": results
+    }
+    
+    return jsonify(response_body), 200
+
+@app.route('/starships', methods=['GET'])
+def get_all_starships():
+    query_results = Starships.query.all()
+    results = list(map(lambda item: item.serialize(), query_results))
+
+    if results == []:
+        return jsonify("por el momento no hay planetas"), 404
+    
+    response_body = {
+        "msg": "ok",
+        "results": results
+    }
+    
     return jsonify(response_body), 200
 
 # this only runs if `$ python src/app.py` is executed

@@ -11,17 +11,14 @@ class Favorites(db.Model):
     planets_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
     starships_id = db.Column(db.Integer, db.ForeignKey('starships.id'))
    
-    # def to_dict(self):
-    #     return {}
+
     
     def __repr__(self):
-        return '<User %r>' % self.user
+        return '<User %r>' % self.user_id
 
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
         }
     
 class User(db.Model):
@@ -39,7 +36,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            # do not serialize the password, its a security breach
+            "age": self.age,
+            "name": self.name,
         }
     
 class Characters(db.Model):
@@ -56,13 +54,19 @@ class Characters(db.Model):
 
     
     def __repr__(self):
-        return '<User %r>' % self.user
+        return '<User %r>' % self.name
 
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
+            "height": self.height,
+            "mass": self.height,
+            "hair_color": self.height,
+            "eye_color": self.height,
+            "gender": self.height,
+            "birth_year": self.height,
+            "name": self.name,
+            
         }
 
 class Planets(db.Model):
@@ -78,13 +82,18 @@ class Planets(db.Model):
 
     
     def __repr__(self):
-        return '<User %r>' % self.user
+        return '<User %r>' % self.name
 
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
+            "climate": self.climate,
+            "population": self.population,
+            "orbital_period": self.orbital_period,
+            "rotation_period": self.rotation_period,
+            "diameter": self.diameter,
+            "name": self.name,
+           
         }
     
 class Starships(db.Model):
@@ -100,12 +109,24 @@ class Starships(db.Model):
 
     
     def __repr__(self):
-        return '<User %r>' % self.user
+        return '<User %r>' % self.model
 
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
+            "manufacturer": self.manufacturer,
+            "crew": self.crew,
+            "passengers": self.passengers,
+            "consumables": self.consumables,
+            "cost_in_credits": self.cost_in_credits,
+            "model": self.model
+        
         }
     
+
+
+
+
+
+        # def to_dict(self):
+    #     return {}
