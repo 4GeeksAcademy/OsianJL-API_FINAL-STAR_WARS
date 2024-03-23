@@ -6,13 +6,19 @@ db = SQLAlchemy()
 class Favorites(db.Model):
     __tablename__ = 'favorites'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     characters_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
     planets_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
     starships_id = db.Column(db.Integer, db.ForeignKey('starships.id'))
    
 
-    
+    # def __init__(self, user_id, character_id=None, planet_id=None, starship_id=None):
+    #     self.user_id = user_id
+    #     self.character_id = character_id
+    #     self.planet_id = planet_id
+    #     self.starship_id = starship_id
+
+
     def __repr__(self):
         return '<Favorites %r>' % self.id
 

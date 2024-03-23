@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Planets, Characters, Starships
+from models import db, User, Planets, Characters, Starships, Favorites
 #from models import Person
 
 app = Flask(__name__)
@@ -140,19 +140,148 @@ def get_one_character(characters_id):
     }
     return jsonify(response_body), 200
 
-@app.route('/starships/<int:starships_id>', methods=['GET'])
-def get_one_starship(starships_id):
-    query_results = Starships.query.filter_by(id=starships_id).first()
+@app.route('/users/favorites/<int:user_id>', methods=['GET'])
+def get_all_favorites_of_user(user_id):
+    query_results = Favorites.query.filter_by(user_id=user_id).all()
+    print(query_results)
+
+    if query_results:
+        results = list(map(lambda item: item.serialize(), query_results))
+        return jsonify({"msg": "ok", "results": results}), 200
+    
+    else: 
+        return jsonify({"msg": "there are not favorites"}), 404
+
+
+
+
+@app.route('/favorite/planet/<int:planets_id>', methods=['POST'])
+def add_new_favorite_planet(planets_id):
+    data = request.json
+    print(data)
+
+    user_exists = User.query.filter_by(id=data["user_id"]).first()
+    planets_exists = Planets.query.filter_by(id=data["planets_id"]).first()
+    
+    if user_exists and planets_exists: 
+
+
+        query_results = Favorites.query.filter_by(planets_id=data["planets_id"], user_id=data["user_id"]).first()
+
+        if query_results is None: 
+
+            new_favorite = Favorites(planets_id=data["planets_id"], user_id=data["user_id"])
+            db.session.add(new_favorite)
+            db.session.commit()
+            return ({"msg": "ok"}), 200
+
+       
+
+        else:
+            return ({"msg": "it already has a favorite"}), 200
+        
+    elif user_exists is None and planets_exists is None:
+        return ({"msg": "both user and planet do not exist"}), 400
+    
+    elif user_exists is None: 
+        return ({"msg": "this user does not exist"}), 400
+    
+    elif planets_exists is None: 
+        return ({"msg": "this planet does not exist"}), 400
+    
+    
+@app.route('/favorite/character/<int:characters_id>', methods=['POST'])
+def add_new_favorite_character(characters_id):
+    data = request.json
+    print(data)
+
+    user_exists = User.query.filter_by(id=data["user_id"]).first()
+    characters_exists = Characters.query.filter_by(id=data["characters_id"]).first()
+    
+    if user_exists and characters_exists: 
+
+
+        query_results = Favorites.query.filter_by(characters_id=data["characters_id"], user_id=data["user_id"]).first()
+
+        if query_results is None: 
+
+            new_favorite = Favorites(characters_id=data["characters_id"], user_id=data["user_id"])
+            db.session.add(new_favorite)
+            db.session.commit()
+            return ({"msg": "ok"}), 200
+
+       
+
+        else:
+            return ({"msg": "it already has a favorite"}), 200
+        
+    elif user_exists is None and characters_exists is None:
+        return ({"msg": "both user and character do not exist"}), 400
+    
+    elif user_exists is None: 
+        return ({"msg": "this user does not exist"}), 400
+    
+    elif characters_exists is None: 
+        return ({"msg": "this character does not exist"}), 400    
+
+ 
+
+
+
+
+
+@app.route('/favorite/planet/<int:planets_id>', methods=['DELETE'])
+def delete_favorite_planet(planets_id):
+    data = request.json
+
+    user_exists = User.query.filter_by(id=data["user_id"]).first()
+    planets_exists = Planets.query.filter_by(id=data["planets_id"]).first()
+    
+    if user_exists and planets_exists: 
+
+        query_results = Favorites.query.filter_by(planets_id=data["planets_id"], user_id=data["user_id"]).first()
+
+        if query_results: 
+         
+            db.session.delete(query_results)
+            db.session.commit()
+            return ({"msg": "ok, its deleted"}), 200
+
+        
+
+        else: 
+
+           return ({"msg": "there is nothing to delete"}), 200
+
+       
+
+        
+@app.route('/favorite/character/<int:user_id>/<int:characters_id>', methods=['DELETE'])
+def delete_favorite_character(user_id,characters_id):
    
 
-    if query_results is None:
-        return jsonify({"msg": "esa nave no existe"}), 404
+    user_exists = User.query.filter_by(id=user_id).first()
+    character_exists = Characters.query.filter_by(id=characters_id).first()
     
-    response_body = {
-        "msg": "ok",
-        "results": query_results.serialize()
-    }
-    return jsonify(response_body), 200
+    if user_exists and character_exists: 
+
+        query_results = Favorites.query.filter_by(characters_id=characters_id, user_id=user_id).first()
+
+        if query_results: 
+         
+            db.session.delete(query_results)
+            db.session.commit()
+            return ({"msg": "ok, its deleted"}), 200
+
+        
+
+        else: 
+
+           return ({"msg": "there is nothing to delete"}), 200
+
+       
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
