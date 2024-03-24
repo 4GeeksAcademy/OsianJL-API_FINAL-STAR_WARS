@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+#DEFINIMOS NUESTRAS TABLAS Y LAS RELACIONES ENTRE ELLAS, AÑADIENDO LOS ATRIBUTOS CORRESPONDIENTES:
 
 class Favorites(db.Model):
     __tablename__ = 'favorites'
@@ -11,12 +12,6 @@ class Favorites(db.Model):
     planets_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
     starships_id = db.Column(db.Integer, db.ForeignKey('starships.id'))
    
-
-    # def __init__(self, user_id, character_id=None, planet_id=None, starship_id=None):
-    #     self.user_id = user_id
-    #     self.character_id = character_id
-    #     self.planet_id = planet_id
-    #     self.starship_id = starship_id
 
 
     def __repr__(self):
@@ -30,8 +25,8 @@ class Favorites(db.Model):
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), unique=True, nullable=False)
-    age = db.Column(db.Integer, unique=True, nullable=False)
+    name = db.Column(db.String(250), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     user_favorites = db.relationship(Favorites)
 
@@ -41,9 +36,9 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            "age": self.age,
             "name": self.name,
+            "age": self.age,
+            "email": self.email,
         }
     
 class Characters(db.Model):
@@ -65,13 +60,13 @@ class Characters(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "name": self.name,
             "height": self.height,
             "mass": self.height,
             "hair_color": self.height,
             "eye_color": self.height,
             "gender": self.height,
             "birth_year": self.height,
-            "name": self.name,
             
         }
 
@@ -93,12 +88,12 @@ class Planets(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "name": self.name,
             "climate": self.climate,
             "population": self.population,
             "orbital_period": self.orbital_period,
             "rotation_period": self.rotation_period,
             "diameter": self.diameter,
-            "name": self.name,
            
         }
     
@@ -133,6 +128,3 @@ class Starships(db.Model):
 
 
 
-
-        # def to_dict(self):
-    #     return {}

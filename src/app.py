@@ -36,13 +36,16 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+#DEFINIMOS NUESTROS ENDPOINTS:
+#ENDPOINTS GET: 
+
 @app.route('/user', methods=['GET'])
 def get_all_users():
     query_results = User.query.all()
     results = list(map(lambda item: item.serialize(), query_results))
 
     if results == []:
-        return jsonify("por el momento no hay usuarios"), 404
+        return jsonify("no users in the database"), 404
     
     response_body = {
         "msg": "ok",
@@ -57,7 +60,7 @@ def get_all_planets():
     results = list(map(lambda item: item.serialize(), query_results))
 
     if results == []:
-        return jsonify("por el momento no hay planetas"), 404
+        return jsonify("no planets in the database"), 404
     
     response_body = {
         "msg": "ok",
@@ -73,7 +76,7 @@ def get_all_characters():
     results = list(map(lambda item: item.serialize(), query_results))
 
     if results == []:
-        return jsonify("por el momento no hay planetas"), 404
+        return jsonify("no characters in the database"), 404
     
     response_body = {
         "msg": "ok",
@@ -88,7 +91,7 @@ def get_all_starships():
     results = list(map(lambda item: item.serialize(), query_results))
 
     if results == []:
-        return jsonify("por el momento no hay planetas"), 404
+        return jsonify("no starships in the database"), 404
     
     response_body = {
         "msg": "ok",
@@ -97,6 +100,7 @@ def get_all_starships():
     
     return jsonify(response_body), 200
 
+# ENDPOINTS PARA OBTENER USUARIOS, PLANETAS, PERSONAJES Y NAVES CONCRETAS, USANDO SU ID 
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_one_user(user_id):
@@ -104,7 +108,7 @@ def get_one_user(user_id):
    
 
     if query_results is None:
-        return jsonify({"msg": "ese usuario no existe"}), 404
+        return jsonify({"msg": "there is no user matching the ID provided"}), 404
     
     response_body = {
         "msg": "ok",
@@ -118,7 +122,7 @@ def get_one_planet(planets_id):
    
 
     if query_results is None:
-        return jsonify({"msg": "ese planeta no existe"}), 404
+        return jsonify({"msg": "there is no planet matching the ID provided"}), 404
     
     response_body = {
         "msg": "ok",
@@ -132,7 +136,7 @@ def get_one_character(characters_id):
    
 
     if query_results is None:
-        return jsonify({"msg": "ese personaje no existe"}), 404
+        return jsonify({"msg": "there is no character matching the ID provided"}), 404
     
     response_body = {
         "msg": "ok",
@@ -140,22 +144,25 @@ def get_one_character(characters_id):
     }
     return jsonify(response_body), 200
 
-@app.route('/users/favorites/<int:user_id>', methods=['GET'])
+
+# OBTENER TODOS LOS FAVORITOS DE UN USUARIO
+@app.route('/user/favorites/<int:user_id>', methods=['GET'])
 def get_all_favorites_of_user(user_id):
     query_results = Favorites.query.filter_by(user_id=user_id).all()
-    print(query_results)
+    
 
     if query_results:
         results = list(map(lambda item: item.serialize(), query_results))
         return jsonify({"msg": "ok", "results": results}), 200
     
     else: 
-        return jsonify({"msg": "there are not favorites"}), 404
+        return jsonify({"msg": "this user has no favorites yet"}), 404
 
 
 
+# CREAR NUEVOS FAVORITOS PARA USUARIOS 
 
-@app.route('/favorite/planet/<int:planets_id>', methods=['POST'])
+@app.route('/favorites/planet/<int:planets_id>', methods=['POST'])
 def add_new_favorite_planet(planets_id):
     data = request.json
     print(data)
@@ -178,7 +185,7 @@ def add_new_favorite_planet(planets_id):
        
 
         else:
-            return ({"msg": "it already has a favorite"}), 200
+            return ({"msg": "this user already has this planet as a favorite"}), 200
         
     elif user_exists is None and planets_exists is None:
         return ({"msg": "both user and planet do not exist"}), 400
@@ -189,8 +196,8 @@ def add_new_favorite_planet(planets_id):
     elif planets_exists is None: 
         return ({"msg": "this planet does not exist"}), 400
     
-    
-@app.route('/favorite/character/<int:characters_id>', methods=['POST'])
+
+@app.route('/favorites/character/<int:characters_id>', methods=['POST'])
 def add_new_favorite_character(characters_id):
     data = request.json
     print(data)
@@ -213,7 +220,7 @@ def add_new_favorite_character(characters_id):
        
 
         else:
-            return ({"msg": "it already has a favorite"}), 200
+            return ({"msg": "this user already has this character as a favorite"}), 200
         
     elif user_exists is None and characters_exists is None:
         return ({"msg": "both user and character do not exist"}), 400
@@ -228,9 +235,9 @@ def add_new_favorite_character(characters_id):
 
 
 
-
-
-@app.route('/favorite/planet/<int:planets_id>', methods=['DELETE'])
+# BORRAR UN PLANETA FAVORITO DE UNA CUENTA DE UN USUARIO
+# PRIMER MÉTODO, USANDO EL REQUEST.JSON PARA SABER IDS DE USUARIO Y PLANETA
+@app.route('/favorites/planet/<int:planets_id>', methods=['DELETE'])
 def delete_favorite_planet(planets_id):
     data = request.json
 
@@ -255,8 +262,8 @@ def delete_favorite_planet(planets_id):
 
        
 
-        
-@app.route('/favorite/character/<int:user_id>/<int:characters_id>', methods=['DELETE'])
+# SEGUNDO MÉTODO, USANDO LA URL DINÁMICA PARA SABER IDS DE USUARIO Y PLANETA (METODO OPTIMO)        
+@app.route('/favorites/character/<int:user_id>/<int:characters_id>', methods=['DELETE'])
 def delete_favorite_character(user_id,characters_id):
    
 
@@ -280,6 +287,85 @@ def delete_favorite_character(user_id,characters_id):
            return ({"msg": "there is nothing to delete"}), 200
 
        
+
+
+
+#CREAR UN PLANETA NUEVO
+@app.route('/planet', methods=['POST'])
+def add_new_planet():
+    data = request.json
+    print(data)
+
+    planet_exists = Planets.query.filter_by(name=data["name"]).first()
+    
+    if planet_exists is None: 
+
+            new_planet = Planets(
+                name=data["name"], 
+                climate=data["climate"], 
+                population=data["population"], 
+                orbital_period=data["orbital_period"], 
+                rotation_period=data["rotation_period"], 
+                diameter=data["diameter"]
+                )
+            db.session.add(new_planet)
+            db.session.commit()
+            return ({"msg": "ok, a new planet has been added to the database"}), 200
+
+       
+
+    else:
+            return ({"msg": "this planet already is already included in the database"}), 200
+        
+# BORRAR PLANETAS EN BASE A SU NOMBRE        
+@app.route('/planet', methods=['DELETE'])
+def delete_planet():
+    data = request.json
+
+    
+    planet_exists = Planets.query.filter_by(name=data["name"]).first()
+    
+    if planet_exists: 
+         
+            db.session.delete(planet_exists)
+            db.session.commit()
+            return ({"msg": "ok, its deleted"}), 200
+
+        
+
+    else: 
+
+           return ({"msg": "there is nothing to delete"}), 200
+    
+
+
+
+
+# ACTUALIZAR DATOS DE UN PLANETA en base a su nombre
+@app.route('/planet', methods=['PUT'])
+def update_planet():
+    data = request.json
+    print(data)
+
+    planet = Planets.query.filter_by(name=data["name"]).first()
+    
+    if planet: 
+    
+            planet.climate=data["climate"], 
+            planet.population=data["population"], 
+            planet.orbital_period=data["orbital_period"], 
+            planet.rotation_period=data["rotation_period"], 
+            planet.diameter=data["diameter"]
+                
+            
+            db.session.commit()
+            return ({"msg": "ok, the planet has been updated in the database"}), 200
+
+       
+
+    else:
+            return ({"msg": "this planet does not exist, you can't update it"}), 200
+
 
 
 
