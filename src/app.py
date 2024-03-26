@@ -9,6 +9,10 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User, Planets, Characters, Starships, Favorites
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 #from models import Person
 
 app = Flask(__name__)
@@ -367,6 +371,72 @@ def update_planet():
             return ({"msg": "this planet does not exist, you can't update it"}), 200
 
 
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+jwt = JWTManager(app)
+
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+@app.route("/login", methods=["POST"])
+def login():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    query_results = User.query.filter_by(email=email).first()
+    print(query_results)
+
+    if query_results is None:
+            return jsonify({"msg": "Bad Request"}), 404
+    
+    if email != query_results.email or password != query_results.password:
+         return jsonify({"msg": "Bad email or password"}), 401
+    
+    access_token = create_access_token(identity=email)
+    return jsonify(access_token=access_token)
+
+
+# @app.route("/signin", methods=["POST"])
+# def signin():
+#     email = request.json.get("email", None)
+#     password = request.json.get("password", None)
+
+#     query_results = User.query.filter_by(email=email).first()
+#     print(query_results)
+
+#     if query_results is None:
+#             return jsonify({"msg": "Bad Request"}), 404
+    
+#     if email != query_results.email or password != query_results.password:
+#          return jsonify({"msg": "Bad email or password"}), 401
+    
+#     access_token = create_access_token(identity=email)
+#     return jsonify(access_token=access_token)
+
+@app.route('/user', methods=['POST'])
+def add_new_user():
+    data = request.json
+    name = request.json.get("name", None)
+
+    user_exists = User.query.filter_by(name=data["name"]).first()
+    
+    if user_exists is None: 
+
+            new_user = User(
+                name=data["name"], 
+                age=data["age"], 
+                email=data["email"], 
+                password=data["password"]
+                )
+            db.session.add(new_user)
+            db.session.commit()
+            access_token = create_access_token(identity=name)
+            return jsonify({
+            "msg": "A new user has been added to the database",
+            "access_token": access_token
+        }), 200
+    else:
+        return jsonify({"error": "User already exists"}), 400
+           
 
 
 # this only runs if `$ python src/app.py` is executed

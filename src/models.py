@@ -28,6 +28,7 @@ class User(db.Model):
     name = db.Column(db.String(250), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=True)
     user_favorites = db.relationship(Favorites)
 
     def __repr__(self):
@@ -39,6 +40,7 @@ class User(db.Model):
             "name": self.name,
             "age": self.age,
             "email": self.email,
+            "password": self.password
         }
     
 class Characters(db.Model):
