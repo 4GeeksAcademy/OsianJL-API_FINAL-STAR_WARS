@@ -162,7 +162,56 @@ def get_all_favorites_of_user(user_id):
     else: 
         return jsonify({"msg": "this user has no favorites yet"}), 404
 
+#CREAR UN USUARIO
 
+@app.route('/user', methods=['POST'])
+def add_new_user():
+    data = request.json
+
+    user_exists = User.query.filter_by(name=data["name"]).first()
+    
+    if user_exists is None: 
+
+            new_user = User(
+                name=data["name"], 
+                email=data["email"], 
+                password=data["password"]
+                )
+            db.session.add(new_user)
+            db.session.commit()
+            return jsonify({
+            "msg": "A new user has been added to the database",
+        }), 200
+    else:
+        return jsonify({"error": "User already exists"}), 400
+    
+
+#CREAR UN PLANETA NUEVO
+@app.route('/planet', methods=['POST'])
+def add_new_planet():
+    data = request.json
+    print(data)
+
+    planet_exists = Planets.query.filter_by(name=data["name"]).first()
+    
+    if planet_exists is None: 
+
+            new_planet = Planets(
+                name=data["name"], 
+                climate=data["climate"], 
+                population=data["population"], 
+                orbital_period=data["orbital_period"], 
+                rotation_period=data["rotation_period"], 
+                diameter=data["diameter"]
+                )
+            db.session.add(new_planet)
+            db.session.commit()
+            return ({"msg": "ok, a new planet has been added to the database"}), 200
+
+       
+
+    else:
+            return ({"msg": "this planet already is already included in the database"}), 200
 
 # CREAR NUEVOS FAVORITOS PARA USUARIOS 
 
@@ -235,9 +284,89 @@ def add_new_favorite_character(characters_id):
     elif characters_exists is None: 
         return ({"msg": "this character does not exist"}), 400    
 
+
+# ACTUALIZAR USUARIO en base a su nombre
+@app.route('/user', methods=['PUT'])
+def update_user():
+    data = request.json
+
+    user = User.query.filter_by(name=data["name"]).first()
+    
+    if user: 
+    
+            user.name=data["name"], 
+            user.email=data["email"],
+            user.password=data["password"]
+                
+            
+            db.session.commit()
+            return ({"msg": "ok, the user has been updated in the database"}), 200
+
+       
+
+    else:
+            return ({"msg": "this user does not exist, you can't update it"}), 200
+
+
  
+# ACTUALIZAR DATOS DE UN PLANETA en base a su nombre
+@app.route('/planet', methods=['PUT'])
+def update_planet():
+    data = request.json
+    print(data)
 
+    planet = Planets.query.filter_by(name=data["name"]).first()
+    
+    if planet: 
+    
+            planet.climate=data["climate"], 
+            planet.population=data["population"], 
+            planet.orbital_period=data["orbital_period"], 
+            planet.rotation_period=data["rotation_period"], 
+            planet.diameter=data["diameter"]
+                
+            
+            db.session.commit()
+            return ({"msg": "ok, the planet has been updated in the database"}), 200
 
+       
+
+    else:
+            return ({"msg": "this planet does not exist, you can't update it"}), 200
+
+# BORRAR USUARIO EN BASE A SU NOMBRE        
+@app.route('/user', methods=['DELETE'])
+def delete_user():
+    data = request.json
+
+    user_exists = User.query.filter_by(name=data["name"]).first()
+    
+    if user_exists: 
+         
+            db.session.delete(user_exists)
+            db.session.commit()
+            return ({"msg": "ok, its deleted"}), 200
+
+        
+
+    else: 
+
+           return ({"msg": "there is nothing to delete"}), 200
+    
+
+# BORRAR TODOS LOS USUARIOS       
+@app.route('/users', methods=['DELETE'])
+def delete_all_users():
+    users_deleted = User.query.delete()
+    db.session.commit()
+    
+    if users_deleted > 0: 
+            return ({"msg": "ok, all users have been deleted"}), 200
+
+    else: 
+
+           return ({"msg": "there are no users to delete"}), 200
+    
 
 # BORRAR UN PLANETA FAVORITO DE UNA CUENTA DE UN USUARIO
 # PRIMER MÉTODO, USANDO EL REQUEST.JSON PARA SABER IDS DE USUARIO Y PLANETA
@@ -294,32 +423,7 @@ def delete_favorite_character(user_id,characters_id):
 
 
 
-#CREAR UN PLANETA NUEVO
-@app.route('/planet', methods=['POST'])
-def add_new_planet():
-    data = request.json
-    print(data)
 
-    planet_exists = Planets.query.filter_by(name=data["name"]).first()
-    
-    if planet_exists is None: 
-
-            new_planet = Planets(
-                name=data["name"], 
-                climate=data["climate"], 
-                population=data["population"], 
-                orbital_period=data["orbital_period"], 
-                rotation_period=data["rotation_period"], 
-                diameter=data["diameter"]
-                )
-            db.session.add(new_planet)
-            db.session.commit()
-            return ({"msg": "ok, a new planet has been added to the database"}), 200
-
-       
-
-    else:
-            return ({"msg": "this planet already is already included in the database"}), 200
         
 # BORRAR PLANETAS EN BASE A SU NOMBRE        
 @app.route('/planet', methods=['DELETE'])
@@ -345,30 +449,7 @@ def delete_planet():
 
 
 
-# ACTUALIZAR DATOS DE UN PLANETA en base a su nombre
-@app.route('/planet', methods=['PUT'])
-def update_planet():
-    data = request.json
-    print(data)
 
-    planet = Planets.query.filter_by(name=data["name"]).first()
-    
-    if planet: 
-    
-            planet.climate=data["climate"], 
-            planet.population=data["population"], 
-            planet.orbital_period=data["orbital_period"], 
-            planet.rotation_period=data["rotation_period"], 
-            planet.diameter=data["diameter"]
-                
-            
-            db.session.commit()
-            return ({"msg": "ok, the planet has been updated in the database"}), 200
-
-       
-
-    else:
-            return ({"msg": "this planet does not exist, you can't update it"}), 200
 
 
 # Setup the Flask-JWT-Extended extension
@@ -395,47 +476,7 @@ def login():
     return jsonify(access_token=access_token)
 
 
-# @app.route("/signin", methods=["POST"])
-# def signin():
-#     email = request.json.get("email", None)
-#     password = request.json.get("password", None)
 
-#     query_results = User.query.filter_by(email=email).first()
-#     print(query_results)
-
-#     if query_results is None:
-#             return jsonify({"msg": "Bad Request"}), 404
-    
-#     if email != query_results.email or password != query_results.password:
-#          return jsonify({"msg": "Bad email or password"}), 401
-    
-#     access_token = create_access_token(identity=email)
-#     return jsonify(access_token=access_token)
-
-@app.route('/user', methods=['POST'])
-def add_new_user():
-    data = request.json
-    name = request.json.get("name", None)
-
-    user_exists = User.query.filter_by(name=data["name"]).first()
-    
-    if user_exists is None: 
-
-            new_user = User(
-                name=data["name"], 
-                age=data["age"], 
-                email=data["email"], 
-                password=data["password"]
-                )
-            db.session.add(new_user)
-            db.session.commit()
-            access_token = create_access_token(identity=name)
-            return jsonify({
-            "msg": "A new user has been added to the database",
-            "access_token": access_token
-        }), 200
-    else:
-        return jsonify({"error": "User already exists"}), 400
            
 
 

@@ -20,13 +20,15 @@ class Favorites(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "characters_id": self.characters_id,
+            "planets_id": self.planets_id,
+            "starships_id": self.starships_id
         }
     
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=True)
     user_favorites = db.relationship(Favorites)
@@ -38,7 +40,6 @@ class User(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "age": self.age,
             "email": self.email,
             "password": self.password
         }
