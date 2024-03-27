@@ -50,10 +50,10 @@ class Characters(db.Model):
     name = db.Column(db.String(250), nullable=False)
     height = db.Column(db.Integer, nullable=False)
     mass = db.Column(db.Integer, nullable=False)
-    hair_color = db.Column(db.String(250), nullable=False)
-    eye_color = db.Column(db.String(250), nullable=False)
-    gender = db.Column(db.String(250), nullable=False)
-    birth_year = db.Column(db.String(250), nullable=False)
+    # hair_color = db.Column(db.String(250), nullable=False)
+    # eye_color = db.Column(db.String(250), nullable=False)
+    # gender = db.Column(db.String(250), nullable=False)
+    # birth_year = db.Column(db.String(250), nullable=False)
     characters_favorites = db.relationship(Favorites)
 
     
@@ -66,10 +66,10 @@ class Characters(db.Model):
             "name": self.name,
             "height": self.height,
             "mass": self.height,
-            "hair_color": self.height,
-            "eye_color": self.height,
-            "gender": self.height,
-            "birth_year": self.height,
+            # "hair_color": self.height,
+            # "eye_color": self.height,
+            # "gender": self.height,
+            # "birth_year": self.height,
             
         }
 
@@ -79,9 +79,9 @@ class Planets(db.Model):
     name = db.Column(db.String(250), nullable=False)
     climate = db.Column(db.String(250), nullable=False)
     population = db.Column(db.Integer, nullable=False)
-    orbital_period = db.Column(db.Integer, nullable=False)
-    rotation_period = db.Column(db.Integer, nullable=False)
-    diameter = db.Column(db.Integer, nullable=False)
+    # orbital_period = db.Column(db.Integer, nullable=False)
+    # rotation_period = db.Column(db.Integer, nullable=False)
+    # diameter = db.Column(db.Integer, nullable=False)
     planets_favorites = db.relationship(Favorites)
 
     
@@ -94,9 +94,9 @@ class Planets(db.Model):
             "name": self.name,
             "climate": self.climate,
             "population": self.population,
-            "orbital_period": self.orbital_period,
-            "rotation_period": self.rotation_period,
-            "diameter": self.diameter,
+            # "orbital_period": self.orbital_period,
+            # "rotation_period": self.rotation_period,
+            # "diameter": self.diameter,
            
         }
     
@@ -106,9 +106,9 @@ class Starships(db.Model):
     model = db.Column(db.String(250), nullable=False)
     manufacturer = db.Column(db.String(250), nullable=False)
     crew = db.Column(db.Integer, nullable=False)
-    passengers = db.Column(db.Integer, nullable=False)
-    consumables = db.Column(db.String(250), nullable=False)
-    cost_in_credits = db.Column(db.Integer, nullable=False)
+    # passengers = db.Column(db.Integer, nullable=False)
+    # consumables = db.Column(db.String(250), nullable=False)
+    # cost_in_credits = db.Column(db.Integer, nullable=False)
     starships_favorites = db.relationship(Favorites)
 
     
@@ -118,12 +118,13 @@ class Starships(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "model": self.model,
             "manufacturer": self.manufacturer,
-            "crew": self.crew,
-            "passengers": self.passengers,
-            "consumables": self.consumables,
-            "cost_in_credits": self.cost_in_credits,
-            "model": self.model
+            "crew": self.crew
+            # "passengers": self.passengers,
+            # "consumables": self.consumables,
+            # "cost_in_credits": self.cost_in_credits,
+            
         
         }
     
