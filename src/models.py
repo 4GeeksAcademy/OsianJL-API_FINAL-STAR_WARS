@@ -11,6 +11,7 @@ class Favorites(db.Model):
     characters_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
     planets_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
     starships_id = db.Column(db.Integer, db.ForeignKey('starships.id'))
+    item_type = db.Column(db.String(250),unique=False,nullable=False)
    
 
 
@@ -22,24 +23,27 @@ class Favorites(db.Model):
             "id": self.id,
             "characters_id": self.characters_id,
             "planets_id": self.planets_id,
-            "starships_id": self.starships_id
+            "starships_id": self.starships_id,
+            "item_type": self.item_type
         }
     
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    first_name = db.Column(db.String(250), nullable=False)
+    last_name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=True)
     user_favorites = db.relationship(Favorites)
 
     def __repr__(self):
-        return '<User %r>' % self.name
+        return '<User %r>' % self.first_name
 
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
             "email": self.email,
             "password": self.password
         }
@@ -50,10 +54,10 @@ class Characters(db.Model):
     name = db.Column(db.String(250), nullable=False)
     height = db.Column(db.Integer, nullable=False)
     mass = db.Column(db.Integer, nullable=False)
-    # hair_color = db.Column(db.String(250), nullable=False)
-    # eye_color = db.Column(db.String(250), nullable=False)
-    # gender = db.Column(db.String(250), nullable=False)
-    # birth_year = db.Column(db.String(250), nullable=False)
+    hair_color = db.Column(db.String(250), nullable=False)
+    eye_color = db.Column(db.String(250), nullable=False)
+    gender = db.Column(db.String(250), nullable=False)
+    birth_year = db.Column(db.String(250), nullable=False)
     characters_favorites = db.relationship(Favorites)
 
     
@@ -65,11 +69,11 @@ class Characters(db.Model):
             "id": self.id,
             "name": self.name,
             "height": self.height,
-            "mass": self.height,
-            # "hair_color": self.height,
-            # "eye_color": self.height,
-            # "gender": self.height,
-            # "birth_year": self.height,
+            "mass": self.mass,
+            "hair_color": self.hair_color,
+            "eye_color": self.eye_color,
+            "gender": self.gender,
+            "birth_year": self.birth_year,
             
         }
 
@@ -79,9 +83,9 @@ class Planets(db.Model):
     name = db.Column(db.String(250), nullable=False)
     climate = db.Column(db.String(250), nullable=False)
     population = db.Column(db.Integer, nullable=False)
-    # orbital_period = db.Column(db.Integer, nullable=False)
-    # rotation_period = db.Column(db.Integer, nullable=False)
-    # diameter = db.Column(db.Integer, nullable=False)
+    orbital_period = db.Column(db.Integer, nullable=False)
+    rotation_period = db.Column(db.Integer, nullable=False)
+    diameter = db.Column(db.Integer, nullable=False)
     planets_favorites = db.relationship(Favorites)
 
     
@@ -94,21 +98,21 @@ class Planets(db.Model):
             "name": self.name,
             "climate": self.climate,
             "population": self.population,
-            # "orbital_period": self.orbital_period,
-            # "rotation_period": self.rotation_period,
-            # "diameter": self.diameter,
+            "orbital_period": self.orbital_period,
+            "rotation_period": self.rotation_period,
+            "diameter": self.diameter,
            
         }
     
 class Starships(db.Model):
     __tablename__ = 'starships'
     id = db.Column(db.Integer, primary_key=True)
-    model = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.String(250), nullable=False)
     manufacturer = db.Column(db.String(250), nullable=False)
     crew = db.Column(db.Integer, nullable=False)
-    # passengers = db.Column(db.Integer, nullable=False)
-    # consumables = db.Column(db.String(250), nullable=False)
-    # cost_in_credits = db.Column(db.Integer, nullable=False)
+    passengers = db.Column(db.Integer, nullable=False)
+    consumables = db.Column(db.String(250), nullable=False)
+    cost_in_credits = db.Column(db.Integer, nullable=False)
     starships_favorites = db.relationship(Favorites)
 
     
@@ -118,14 +122,12 @@ class Starships(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "model": self.model,
+            "name": self.name,
             "manufacturer": self.manufacturer,
-            "crew": self.crew
-            # "passengers": self.passengers,
-            # "consumables": self.consumables,
-            # "cost_in_credits": self.cost_in_credits,
-            
-        
+            "crew": self.crew,
+            "passengers": self.passengers,
+            "consumables": self.consumables,
+            "cost_in_credits": self.cost_in_credits,
         }
     
 
