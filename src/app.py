@@ -352,52 +352,12 @@ def add_new_character():
 ################# AÑADIR FAVORITOS PARA USUARIOS ################################
 
 # AÑADIR PLANETA FAVORITO USANDO IDs EN LA URL DINAMICA 
-# @app.route('/favorites/planet/<int:planet_id>', methods=['POST'])
-# @jwt_required()
-# def add_new_favorite_planet(planet_id):
-
-#     email = get_jwt_identity()
-  
-
-#     user_exists = User.query.filter_by(email=email).first()
-
-#     if user_exists is None: 
-#            return jsonify({"msg": "This user does not exist"}), 401
-
-#     user_id = user_exists.id
-
-#     planet_exists = Planets.query.filter_by(id=planet_id).first()
-    
-#     if planet_exists is None: 
-#            return jsonify({"msg": "This fucking planet does not exist"}), 401
-    
-    
-#     query_results = Favorites.query.filter_by(planets_id=planet_id, user_id=user_id).first()
-#     print(query_results)
-#     if query_results is None: 
-
-#             new_favorite = Favorites(planets_id=planet_id, user_id=user_id)
-#             new_planet = Planets.query.filter_by(id=planet_id).first()
-#             db.session.add(new_favorite)
-#             db.session.commit()
-
-#             response_body = {
-#                  "msg": "ok", 
-#                  "results": new_planet.serialize()
-#             }
-#             return jsonify(response_body), 200 
-
-#     else:
-#             return ({"msg": "this user already has this planet as a favorite"}), 200
-        
-  
-    
-@app.route('/favorites/<int:item_id>', methods=['POST'])
+@app.route('/favorites/planet/<int:planet_id>', methods=['POST'])
 @jwt_required()
-def add_new_favorite(item_id):
-    data = request.json()
+def add_new_favorite_planet(planet_id):
+
     email = get_jwt_identity()
-    item_type = data.item_type
+  
 
     user_exists = User.query.filter_by(email=email).first()
 
@@ -406,50 +366,90 @@ def add_new_favorite(item_id):
 
     user_id = user_exists.id
 
+    planet_exists = Planets.query.filter_by(id=planet_id).first()
+    
+    if planet_exists is None: 
+           return jsonify({"msg": "This fucking planet does not exist"}), 401
+    
+    
+    query_results = Favorites.query.filter_by(planets_id=planet_id, user_id=user_id).first()
+    print(query_results)
+    if query_results is None: 
+
+            new_favorite = Favorites(planets_id=planet_id, user_id=user_id)
+            new_planet = Planets.query.filter_by(id=planet_id).first()
+            db.session.add(new_favorite)
+            db.session.commit()
+
+            response_body = {
+                 "msg": "ok", 
+                 "results": new_planet.serialize()
+            }
+            return jsonify(response_body), 200 
+
+    else:
+            return ({"msg": "this user already has this planet as a favorite"}), 200
+        
+  
+    
+# @app.route('/favorites/<int:item_id>', methods=['POST'])
+# @jwt_required()
+# def add_new_favorite(item_id):
+#     data = request.json()
+#     email = get_jwt_identity()
+#     item_type = data.item_type
+
+#     user_exists = User.query.filter_by(email=email).first()
+
+#     if user_exists is None: 
+#            return jsonify({"msg": "This user does not exist"}), 401
+
+#     user_id = user_exists.id
+
    
-    if item_type is "planet":
+#     if item_type is "planet":
 
-        planet = Planets.query.filter_by(id=item_id).first()
-        if planet is None: 
-           return jsonify({"msg": "This planet does not exist"}), 401
-        new_favorite = Favorites(planets_id=item_id, user_id=user_id)
-        db.session.add(new_favorite)
-        db.session.commit()
-        response_body = {
-                 "msg": "ok", 
-                 "results": planet.serialize()
-            }
-        return jsonify(response_body), 200 
+#         planet = Planets.query.filter_by(id=item_id).first()
+#         if planet is None: 
+#            return jsonify({"msg": "This planet does not exist"}), 401
+#         new_favorite = Favorites(planets_id=item_id, user_id=user_id)
+#         db.session.add(new_favorite)
+#         db.session.commit()
+#         response_body = {
+#                  "msg": "ok", 
+#                  "results": planet.serialize()
+#             }
+#         return jsonify(response_body), 200 
 
-    if item_type is "character":
-        character = Characters.query.filter_by(id=item_id).first()
-        if character is None: 
-           return jsonify({"msg": "This character does not exist"}), 401
-        new_favorite = Favorites(characters_id=item_id, user_id=user_id)
-        db.session.add(new_favorite)
-        db.session.commit()
-        response_body = {
-                 "msg": "ok", 
-                 "results": character.serialize()
-            }
-        return jsonify(response_body), 200 
+#     if item_type is "character":
+#         character = Characters.query.filter_by(id=item_id).first()
+#         if character is None: 
+#            return jsonify({"msg": "This character does not exist"}), 401
+#         new_favorite = Favorites(characters_id=item_id, user_id=user_id)
+#         db.session.add(new_favorite)
+#         db.session.commit()
+#         response_body = {
+#                  "msg": "ok", 
+#                  "results": character.serialize()
+#             }
+#         return jsonify(response_body), 200 
 
-    if item_type is "starship":
-        starship = Starships.query.filter_by(id=item_id).first()
-        if starship is None: 
-           return jsonify({"msg": "This starship does not exist"}), 401
-        new_favorite = Favorites(starships_id=item_id, user_id=user_id)
-        db.session.add(new_favorite)
-        db.session.commit()
-        response_body = {
-                 "msg": "ok", 
-                 "results": starship.serialize()
-            }
-        return jsonify(response_body), 200 
+#     if item_type is "starship":
+#         starship = Starships.query.filter_by(id=item_id).first()
+#         if starship is None: 
+#            return jsonify({"msg": "This starship does not exist"}), 401
+#         new_favorite = Favorites(starships_id=item_id, user_id=user_id)
+#         db.session.add(new_favorite)
+#         db.session.commit()
+#         response_body = {
+#                  "msg": "ok", 
+#                  "results": starship.serialize()
+#             }
+#         return jsonify(response_body), 200 
 
 
-    # else:
-    #         return ({"msg": "this user already has this planet as a favorite"}), 200
+#     # else:
+#     #         return ({"msg": "this user already has this planet as a favorite"}), 200
     
 
 # AÑADIR NAVE ESPACIAL FAVORITA USANDO IDs EN LA URL DINAMICA 

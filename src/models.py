@@ -11,7 +11,7 @@ class Favorites(db.Model):
     characters_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
     planets_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
     starships_id = db.Column(db.Integer, db.ForeignKey('starships.id'))
-    item_type = db.Column(db.String(250),unique=False,nullable=False)
+    
    
 
 
@@ -24,7 +24,7 @@ class Favorites(db.Model):
             "characters_id": self.characters_id,
             "planets_id": self.planets_id,
             "starships_id": self.starships_id,
-            "item_type": self.item_type
+        
         }
     
 class User(db.Model):

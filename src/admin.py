@@ -10,8 +10,8 @@ def setup_admin(app):
 
  #Special MODELview for favorite table
     class FavoritesView(ModelView):
-        column_list = ('characters_id', 'planets_id', 'starships_id', 'user_id', 'item_type')
-        form_columns = ('characters_id', 'planets_id', 'starships_id', 'user_id', 'item_type')  
+        column_list = ('characters_id', 'planets_id', 'starships_id', 'user_id')
+        form_columns = ('characters_id', 'planets_id', 'starships_id', 'user_id')  
 
 
     # Add your models here, for example this is how we add a the User model to the admin
