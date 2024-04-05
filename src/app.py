@@ -762,8 +762,8 @@ def login():
 
 
 #SIGN IN ############################################################################################
-@app.route("/signin", methods=["POST"])
-def signin():
+@app.route("/signup", methods=["POST"])
+def signup():
     first_name = request.json.get("first_name", None)
     last_name = request.json.get("last_name", None)
     email = request.json.get("email", None)

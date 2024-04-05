@@ -52,6 +52,7 @@ class Characters(db.Model):
     __tablename__ = 'characters'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
+
     height = db.Column(db.Integer, nullable=False)
     mass = db.Column(db.Integer, nullable=False)
     hair_color = db.Column(db.String(250), nullable=False)
@@ -74,6 +75,7 @@ class Characters(db.Model):
             "eye_color": self.eye_color,
             "gender": self.gender,
             "birth_year": self.birth_year,
+            
             
         }
 
